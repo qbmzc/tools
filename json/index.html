@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Formatter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .json-container {
+            padding: 20px;
+            border: 1px solid #ccc;
+            background-color: #f5f5f5;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .json-key {
+            color: #1a0dab;
+        }
+        .json-string {
+            color: #df5000;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>JSON Formatter</h1>
+    <textarea id="json-input" placeholder="在此处输入或粘贴JSON数据"></textarea>
+    <button onclick="formatJson()">格式化并显示</button>
+    <div class="json-container" id="json-output"></div>
+
+    <script>
+        function formatJson() {
+            const input = document.getElementById('json-input');
+            const output = document.getElementById('json-output');
+
+            try {
+                const json = JSON.parse(input.value);
+                let jsonString = JSON.stringify(json, null, 4); // 美化输出（缩进4个空格）
+                
+                // 将JSON字符串转换为带有样式的关键字和字符串的DOM结构
+                let dom = document.createElement('div');
+                jsonString.split(/([\{\}\[\],])/).forEach((part, index) => {
+                    if (part.match(/[{}\[\]"]/)) {
+                        let span = document.createElement('span');
+                        span.className = 'json-' + part.replace(/"|'/g, '');
+                        span.textContent = part;
+                        dom.appendChild(span);
+                    } else if (index % 2 === 0) {
+                        dom.appendChild(document.createTextNode(part));
+                    }
+                });
+
+                output.innerHTML = '';
+                output.appendChild(dom);
+            } catch (error) {
+                alert('输入的不是有效的JSON数据！');
+            }
+        }
+    </script>
+
+</body>
+</html>
