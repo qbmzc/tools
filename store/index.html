@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>存储单位换算器</title>
+    <style>
+        /* CSS样式 */
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 300px;
+            margin: auto;
+            padding: 20px;
+        }
+        select, input[type="number"] {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>存储单位换算器</h2>
+        <label for="inputBytes">请输入字节数:</label>
+        <input type="number" id="inputValue" name="inputBytes" required>
+        <label for="selectUnit">选择输入单位:</label>
+        <select id="selectUnit">
+            <option value="B">字节 (B)</option>
+            <option value="KB">千字节 (KB)</option>
+            <option value="MB">兆字节 (MB)</option>
+            <option value="GB">吉字节 (GB)</option>
+            <!-- 可以添加更多单位 -->
+        </select>
+        <label for="selectTargetUnit">转换为:</label>
+        <select id="selectTargetUnit">
+            <option value="B">字节 (B)</option>
+            <option value="KB">千字节 (KB)</option>
+            <option value="MB">兆字节 (MB)</option>
+            <option value="GB">吉字节 (GB)</option>
+            <!-- 同样可以添加更多单位 -->
+        </select>
+        <button onclick="convert()">转换</button>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        // JavaScript部分
+        const byteConversions = {
+            B: 1,
+            KB: 1024,
+            MB: 1024 ** 2,
+            GB: 1024 ** 3,
+            // 添加更多单位对应的转换系数
+        };
+
+        function convert() {
+            const inputValue = document.getElementById("inputValue").value;
+            const inputUnit = document.getElementById("selectUnit").value;
+            const targetUnit = document.getElementById("selectTargetUnit").value;
+
+            let bytes = parseFloat(inputValue) * byteConversions[inputUnit];
+            let resultValue = bytes / byteConversions[targetUnit];
+
+            // 保留小数点后11位
+            resultValue = resultValue.toFixed(4);
+
+            document.getElementById("result").innerText = `${inputValue} ${inputUnit} = ${resultValue} ${targetUnit}`;
+        }
+    </script>
+</body>
+</html>
