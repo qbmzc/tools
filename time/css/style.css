@@ -1,0 +1,28 @@
+@font-face {
+    font-family: 'digital-7-mono';
+    src: url('digital-7-mono.ttf') format('truetype');
+    /* 更换为你实际的字体文件路径和格式 */
+}
+
+body,
+html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background-color: #000;
+    color: #00ff00;
+    font-size: 4em;
+    font-family: 'digital-7-mono', monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@media screen and (max-width: 768px) {
+    /* 在小屏幕上缩小字体大小 */
+    body, html {
+        font-size: 3em;
+    }
+}
