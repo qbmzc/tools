@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>时间戳转换工具</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .result {
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>时间戳转换工具</h2>
+    <input type="text" id="timestampInput" placeholder="请输入时间戳">
+    <button onclick="convertTimestamp()">转换为日期时间</button>
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+    function convertTimestamp() {
+        const timestamp = document.getElementById('timestampInput').value;
+        if (timestamp) {
+            // 转换为毫秒级时间戳
+            const date = new Date(parseInt(timestamp));
+            if (!isNaN(date.getTime())) {
+                const formattedDate = date.toLocaleString();
+                document.getElementById('result').innerHTML = `转换后的日期时间: ${formattedDate}`;
+            } else {
+                document.getElementById('result').innerHTML = "无效的时间戳，请检查输入";
+            }
+        } else {
+            document.getElementById('result').innerHTML = "请输入时间戳";
+        }
+    }
+</script>
+
+</body>
+</html>
