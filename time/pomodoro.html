@@ -290,6 +290,8 @@
                 this.timeLeft = this.modes[this.currentMode];
                 this.isRunning = false;
                 this.interval = null;
+                this.startTime = null;
+                this.pausedTime = null;
                 
                 // 统计
                 this.completedCount = this.loadStat('completedCount') || 0;
@@ -335,6 +337,8 @@
                 
                 this.currentMode = mode;
                 this.timeLeft = this.modes[mode];
+                this.startTime = null;
+                this.pausedTime = null;
                 this.updateDisplay();
                 this.updateStatusText();
             }
@@ -353,14 +357,22 @@
                 this.timerDisplay.classList.add('pulsing');
                 this.updateStatusText();
                 
+                // 记录开始时间，考虑暂停的情况
+                this.startTime = Date.now() - (this.pausedTime || 0);
+                
                 this.interval = setInterval(() => {
-                    this.timeLeft--;
-                    this.updateDisplay();
+                    // 根据实际经过的时间计算剩余时间
+                    const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
+                    this.timeLeft = this.modes[this.currentMode] - elapsed;
                     
                     if (this.timeLeft <= 0) {
+                        this.timeLeft = 0;
+                        this.updateDisplay();
                         this.completeTimer();
+                    } else {
+                        this.updateDisplay();
                     }
-                }, 1000);
+                }, 100); // 使用更小的间隔以提高精度
             }
 
             pauseTimer() {
@@ -368,6 +380,10 @@
                 this.startBtn.textContent = '继续';
                 this.timerDisplay.classList.remove('pulsing');
                 clearInterval(this.interval);
+                
+                // 保存已经过的时间（毫秒）
+                this.pausedTime = Date.now() - this.startTime;
+                
                 this.updateStatusText();
             }
 
@@ -377,12 +393,15 @@
                 this.timerDisplay.classList.remove('pulsing');
                 clearInterval(this.interval);
                 this.timeLeft = this.modes[this.currentMode];
+                this.startTime = null;
+                this.pausedTime = null;
                 this.updateDisplay();
                 this.updateStatusText();
             }
 
             completeTimer() {
-                this.pauseTimer();
+                clearInterval(this.interval);
+                this.isRunning = false;
                 this.playSound();
                 
                 if (this.currentMode === 'work') {
