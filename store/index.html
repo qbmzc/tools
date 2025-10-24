@@ -5,79 +5,354 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>存储单位换算器</title>
     <style>
-        /* CSS样式 */
-        body {
-            font-family: Arial, sans-serif;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .container {
-            width: 300px;
-            margin: auto;
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
             padding: 20px;
         }
-        select, input[type="number"] {
-            width: 100%;
-            margin-bottom: 10px;
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
         }
-        button {
-            background-color: #4CAF50;
+        
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
             color: white;
-            padding: 10px 20px;
+            padding: 30px;
             text-align: center;
-            text-decoration: none;
-            display: inline-block;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .input-section {
+            margin-bottom: 40px;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+        
+        .input-group label {
+            font-weight: 600;
+            color: #333;
+            min-width: 80px;
+        }
+        
+        .input-group input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
             font-size: 16px;
-            margin: 10px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+        
+        .unit-selector {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        
+        .unit-option {
+            flex: 1;
+            min-width: 120px;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            text-align: center;
             cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            position: relative;
+        }
+        
+        .unit-option:hover {
+            border-color: #4facfe;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .unit-option.selected {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border-color: #4facfe;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.3);
+        }
+        
+        .unit-option .unit-name {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .unit-option .unit-desc {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .results-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+        }
+        
+        .results-title {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .result-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .result-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .result-value {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #4facfe;
+            margin-bottom: 5px;
+        }
+        
+        .result-unit {
+            font-size: 0.9em;
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .result-item.selected {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+        
+        .result-item.selected .result-value,
+        .result-item.selected .result-unit {
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .input-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .unit-selector {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .results-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>存储单位换算器</h2>
-        <label for="inputBytes">请输入字节数:</label>
-        <input type="number" id="inputValue" name="inputBytes" required>
-        <label for="selectUnit">选择输入单位:</label>
-        <select id="selectUnit">
-            <option value="B">字节 (B)</option>
-            <option value="KB">千字节 (KB)</option>
-            <option value="MB">兆字节 (MB)</option>
-            <option value="GB">吉字节 (GB)</option>
-            <!-- 可以添加更多单位 -->
-        </select>
-        <label for="selectTargetUnit">转换为:</label>
-        <select id="selectTargetUnit">
-            <option value="B">字节 (B)</option>
-            <option value="KB">千字节 (KB)</option>
-            <option value="MB">兆字节 (MB)</option>
-            <option value="GB">吉字节 (GB)</option>
-            <!-- 同样可以添加更多单位 -->
-        </select>
-        <button onclick="convert()">转换</button>
-        <p id="result"></p>
+        <div class="header">
+            <h1>💾 存储单位换算器</h1>
+            <p>支持多种存储单位的快速换算</p>
+        </div>
+        
+        <div class="content">
+            <div class="input-section">
+                <div class="input-group">
+                    <label>数值:</label>
+                    <input type="number" id="inputValue" placeholder="请输入要转换的数值" step="any">
+                </div>
+                
+                <div class="unit-selector" id="unitSelector">
+                    <div class="unit-option" data-unit="B">
+                        <div class="unit-name">字节 (B)</div>
+                        <div class="unit-desc">Byte</div>
+                    </div>
+                    <div class="unit-option" data-unit="KB">
+                        <div class="unit-name">千字节 (KB)</div>
+                        <div class="unit-desc">Kilobyte</div>
+                    </div>
+                    <div class="unit-option" data-unit="MB">
+                        <div class="unit-name">兆字节 (MB)</div>
+                        <div class="unit-desc">Megabyte</div>
+                    </div>
+                    <div class="unit-option" data-unit="GB">
+                        <div class="unit-name">吉字节 (GB)</div>
+                        <div class="unit-desc">Gigabyte</div>
+                    </div>
+                    <div class="unit-option" data-unit="TB">
+                        <div class="unit-name">太字节 (TB)</div>
+                        <div class="unit-desc">Terabyte</div>
+                    </div>
+                    <div class="unit-option" data-unit="PB">
+                        <div class="unit-name">拍字节 (PB)</div>
+                        <div class="unit-desc">Petabyte</div>
+                    </div>
+                    <div class="unit-option" data-unit="EB">
+                        <div class="unit-name">艾字节 (EB)</div>
+                        <div class="unit-desc">Exabyte</div>
+                    </div>
+                    <div class="unit-option" data-unit="ZB">
+                        <div class="unit-name">泽字节 (ZB)</div>
+                        <div class="unit-desc">Zettabyte</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="results-section">
+                <h3 class="results-title">转换结果</h3>
+                <div class="results-grid" id="resultsGrid">
+                    <!-- 结果将通过JavaScript动态生成 -->
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        // JavaScript部分
+        // 存储单位转换系数（以字节为基准）
         const byteConversions = {
             B: 1,
             KB: 1024,
             MB: 1024 ** 2,
             GB: 1024 ** 3,
-            // 添加更多单位对应的转换系数
+            TB: 1024 ** 4,
+            PB: 1024 ** 5,
+            EB: 1024 ** 6,
+            ZB: 1024 ** 7
         };
-
+        
+        // 单位显示名称
+        const unitNames = {
+            B: '字节 (B)',
+            KB: '千字节 (KB)',
+            MB: '兆字节 (MB)',
+            GB: '吉字节 (GB)',
+            TB: '太字节 (TB)',
+            PB: '拍字节 (PB)',
+            EB: '艾字节 (EB)',
+            ZB: '泽字节 (ZB)'
+        };
+        
+        let selectedUnit = 'GB'; // 默认选择GB
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 设置默认选中单位
+            selectUnit(selectedUnit);
+            
+            // 绑定输入事件
+            document.getElementById('inputValue').addEventListener('input', convert);
+            
+            // 绑定单位选择事件
+            document.querySelectorAll('.unit-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    selectUnit(this.dataset.unit);
+                    convert();
+                });
+            });
+            
+            // 初始转换
+            convert();
+        });
+        
+        function selectUnit(unit) {
+            selectedUnit = unit;
+            document.querySelectorAll('.unit-option').forEach(option => {
+                option.classList.remove('selected');
+                if (option.dataset.unit === unit) {
+                    option.classList.add('selected');
+                }
+            });
+        }
+        
         function convert() {
-            const inputValue = document.getElementById("inputValue").value;
-            const inputUnit = document.getElementById("selectUnit").value;
-            const targetUnit = document.getElementById("selectTargetUnit").value;
-
-            let bytes = parseFloat(inputValue) * byteConversions[inputUnit];
-            let resultValue = bytes / byteConversions[targetUnit];
-
-            // 保留小数点后11位
-            resultValue = resultValue.toFixed(4);
-
-            document.getElementById("result").innerText = `${inputValue} ${inputUnit} = ${resultValue} ${targetUnit}`;
+            const inputValue = parseFloat(document.getElementById('inputValue').value) || 0;
+            const resultsGrid = document.getElementById('resultsGrid');
+            
+            // 清空结果
+            resultsGrid.innerHTML = '';
+            
+            // 计算所有单位的转换结果
+            Object.keys(byteConversions).forEach(unit => {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+                
+                if (unit === selectedUnit) {
+                    resultItem.classList.add('selected');
+                }
+                
+                // 计算转换结果
+                const bytes = inputValue * byteConversions[selectedUnit];
+                const resultValue = bytes / byteConversions[unit];
+                
+                // 格式化显示数值
+                let displayValue;
+                if (resultValue === 0) {
+                    displayValue = '0';
+                } else if (resultValue >= 1e12) {
+                    displayValue = resultValue.toExponential(3);
+                } else if (resultValue >= 1) {
+                    displayValue = resultValue.toFixed(6).replace(/\.?0+$/, '');
+                } else {
+                    displayValue = resultValue.toExponential(6);
+                }
+                
+                resultItem.innerHTML = `
+                    <div class="result-value">${displayValue}</div>
+                    <div class="result-unit">${unitNames[unit]}</div>
+                `;
+                
+                resultsGrid.appendChild(resultItem);
+            });
         }
     </script>
 </body>
