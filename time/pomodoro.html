@@ -483,11 +483,13 @@
                 };
 
                 if ('Notification' in window && Notification.permission === 'granted') {
+                    console.log('Notification.permission', Notification.permission);
                     new Notification('番茄钟提醒', {
                         body: messages[this.currentMode],
                         icon: '🍅'
                     });
                 } else {
+                    console.log('Notification.permission', Notification.permission);
                     alert(messages[this.currentMode]);
                 }
             }
