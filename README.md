@@ -16,14 +16,7 @@
 
 ---
 
-<div align="center">
 
-**🌟 如果这些工具对您有帮助，请给个Star支持一下！**
+**🌟 如果这些工具对您有帮助，请给个[Star](https://github.com/qbmzc/tools)支持一下！**
 
 *持续更新中...*
-
-- [项目地址](https://github.com/qbmzc/tools)
-
-
-
-</div>
